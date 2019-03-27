@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class BasicIO{
     
@@ -69,6 +71,48 @@ public class BasicIO{
         }
     }
 
-    public void ListFilesInDirectory(String dir){
+    public void listFilesInADirectory(String dir){
+        File directory = new File(dir);
+        
+        // Check if directory is valid
+        if(!directory.exists() || !directory.isDirectory()){
+            return;
+        }
+
+        // Iterate over files and print names
+        for(File file : directory.listFiles()){
+            System.out.println(file.getName());
+        }
+    }
+
+    public void getXNewestFIles(String dir, int count){
+        File directory = new File(dir);
+        
+        // Check if directory is valid
+        if(!directory.exists() || !directory.isDirectory()){
+            return;
+        }
+        File[] files = directory.listFiles();
+        if(files.length == 0){
+            return;
+        } else if(files.length < count){
+            count = files.length;
+        }
+        
+
+        // Sort files in directory by creation date
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File file1, File file2) {
+                long lastModified = file2.lastModified() - file1.lastModified();
+                return lastModified < 0 ? -1 : 1;
+            }
+        });
+
+        File[] newestFiles = Arrays.copyOfRange(files, 0, count);
+        for(File file : newestFiles){
+            System.out.println(file.getName() + " - " + file.lastModified());
+        }
+        
     }
 }
